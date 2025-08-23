@@ -1,37 +1,33 @@
 import os
+import logging
 from typing import List, Optional
-from datetime import date
+from datetime import date, datetime
 from amadeus import Client, ResponseError
 from dotenv import load_dotenv
 
 from .models import FlightSearchRequest, FlightSearchResponse, FlightOption, FlightPricingRequest, FlightPricingResponse, PriceBreakdown
-from .fixtures import get_demo_flight_search_response, get_demo_flight_pricing
 
 load_dotenv()
 
 
 class AmadeusFlightClient:
-    def __init__(self, use_demo_data: bool = False):
-        self.use_demo_data = use_demo_data
+    def __init__(self):
+        api_key = os.getenv('AMADEUS_API_KEY')
+        api_secret = os.getenv('AMADEUS_API_SECRET')
         
-        if not use_demo_data:
-            api_key = os.getenv('AMADEUS_API_KEY')
-            api_secret = os.getenv('AMADEUS_API_SECRET')
-            
-            if not api_key or not api_secret:
-                raise ValueError("Amadeus API credentials not found. Set AMADEUS_API_KEY and AMADEUS_API_SECRET environment variables.")
-            
-            self.amadeus = Client(
-                client_id=api_key,
-                client_secret=api_secret
-            )
+        if not api_key or not api_secret:
+            raise ValueError("Amadeus API credentials not found. Set AMADEUS_API_KEY and AMADEUS_API_SECRET environment variables.")
+        
+        self.amadeus = Client(
+            client_id=api_key,
+            client_secret=api_secret,
+            hostname='test',  # Start with test environment for development
+            log_level='debug'  # Enable debug logging
+        )
     
     async def search_flights(self, request: FlightSearchRequest) -> FlightSearchResponse:
-        if self.use_demo_data:
-            return get_demo_flight_search_response(request.origin, request.destination)
-        
         try:
-            # Build the search parameters
+            # Build the search parameters according to Amadeus API spec
             params = {
                 'originLocationCode': request.origin,
                 'destinationLocationCode': request.destination,
@@ -53,32 +49,47 @@ class AmadeusFlightClient:
                 params['travelClass'] = request.travel_class
 
             # Make the API call
+            print(f"Making Amadeus API call with params: {params}")
             response = self.amadeus.shopping.flight_offers_search.get(**params)
+            print(f"API call successful, received {len(response.data)} offers")
             
             # Parse the response
             flights = []
             search_id = f"amadeus_search_{request.origin}_{request.destination}_{request.departure_date}"
             
             for offer in response.data:
-                for itinerary in offer['itineraries']:
-                    for segment in itinerary['segments']:
-                        flight = FlightOption(
-                            flight_id=f"{segment['carrierCode']}{segment['number']}_{segment['departure']['at'][:10]}",
-                            airline_code=segment['carrierCode'],
-                            airline_name=segment.get('operating', {}).get('carrierCode', segment['carrierCode']),
-                            departure_time=segment['departure']['at'],
-                            arrival_time=segment['arrival']['at'],
-                            duration=itinerary['duration'],
-                            stops=len(itinerary['segments']) - 1,
-                            price=float(offer['price']['total']),
-                            currency=offer['price']['currency'],
-                            fare_class=offer['travelerPricings'][0]['fareDetailsBySegment'][0]['cabin'],
-                            departure_airport=segment['departure']['iataCode'],
-                            arrival_airport=segment['arrival']['iataCode'],
-                            aircraft_type=segment.get('aircraft', {}).get('code'),
-                            booking_class=offer['travelerPricings'][0]['fareDetailsBySegment'][0]['class']
-                        )
-                        flights.append(flight)
+                # Each offer represents a complete flight option (one-way or round-trip)
+                itinerary = offer['itineraries'][0]  # Take first itinerary (outbound)
+                
+                # Get the first and last segments for overall journey info
+                first_segment = itinerary['segments'][0]
+                last_segment = itinerary['segments'][-1]
+                
+                # Parse datetime strings to datetime objects
+                departure_time = datetime.fromisoformat(first_segment['departure']['at'].replace('Z', '+00:00'))
+                arrival_time = datetime.fromisoformat(last_segment['arrival']['at'].replace('Z', '+00:00'))
+                
+                # Get airline info from operating carrier or marketing carrier
+                operating_carrier = first_segment.get('operating', {})
+                carrier_code = operating_carrier.get('carrierCode', first_segment['carrierCode'])
+                
+                flight = FlightOption(
+                    flight_id=f"{offer['id']}_{first_segment['departure']['at'][:10]}",
+                    airline_code=carrier_code,
+                    airline_name=carrier_code,  # Would need airline name mapping for full names
+                    departure_time=departure_time,
+                    arrival_time=arrival_time,
+                    duration=itinerary['duration'],
+                    stops=len(itinerary['segments']) - 1,
+                    price=float(offer['price']['total']),
+                    currency=offer['price']['currency'],
+                    fare_class=offer['travelerPricings'][0]['fareDetailsBySegment'][0]['cabin'],
+                    departure_airport=first_segment['departure']['iataCode'],
+                    arrival_airport=last_segment['arrival']['iataCode'],
+                    aircraft_type=first_segment.get('aircraft', {}).get('code', ''),
+                    booking_class=offer['travelerPricings'][0]['fareDetailsBySegment'][0]['class']
+                )
+                flights.append(flight)
             
             return FlightSearchResponse(
                 flights=flights[:request.max_results],
@@ -87,26 +98,13 @@ class AmadeusFlightClient:
             )
             
         except ResponseError as error:
-            # Fallback to demo data on API error
-            print(f"Amadeus API error: {error}. Falling back to demo data.")
-            return get_demo_flight_search_response(request.origin, request.destination)
+            print(f"Amadeus ResponseError - Status: {error.response.status_code}, Body: {error.response.body}")
+            raise Exception(f"Amadeus API error: Status {error.response.status_code} - {error.response.body}")
         except Exception as error:
-            print(f"Unexpected error: {error}. Falling back to demo data.")
-            return get_demo_flight_search_response(request.origin, request.destination)
+            print(f"Unexpected error type: {type(error).__name__}, message: {str(error)}")
+            raise Exception(f"Unexpected error: {type(error).__name__}: {str(error)}")
     
     async def get_flight_pricing(self, request: FlightPricingRequest) -> List[FlightPricingResponse]:
-        if self.use_demo_data:
-            return [get_demo_flight_pricing(flight_id) for flight_id in request.flight_ids]
-        
-        pricing_results = []
-        
-        for flight_id in request.flight_ids:
-            try:
-                # For now, fallback to demo pricing as flight pricing requires offer confirmation
-                # In a production implementation, you would use flight-offers-pricing API
-                pricing_results.append(get_demo_flight_pricing(flight_id))
-            except Exception as error:
-                print(f"Error getting pricing for flight {flight_id}: {error}")
-                pricing_results.append(get_demo_flight_pricing(flight_id))
-        
-        return pricing_results
+        # TODO: Implement real Amadeus flight-offers-pricing API
+        # For now, this would require implementing offer confirmation flow
+        raise NotImplementedError("Flight pricing API not yet implemented. Use flight search results for pricing.")

@@ -55,3 +55,27 @@ class FlightPricingResponse(BaseModel):
     price_breakdown: PriceBreakdown
     fare_rules: Optional[Dict[str, Any]] = None
     last_ticketing_date: Optional[date] = None
+
+
+class FlightCalendarRequest(BaseModel):
+    origin: str
+    destination: str
+    departure_date: date
+    return_date: Optional[date] = None
+    adults: int = 1
+    children: int = 0
+    infants: int = 0
+    travel_class: str = "ECONOMY"
+
+
+class CalendarPrice(BaseModel):
+    date: str
+    price: float
+    currency: str = "USD"
+
+
+class FlightCalendarResponse(BaseModel):
+    origin: str
+    destination: str
+    calendar_prices: List[CalendarPrice]
+    search_id: str
