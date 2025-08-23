@@ -1,0 +1,66 @@
+{
+  "name": "hotel-mcp-agent",
+  "version": "1.0.0",
+  "description": "Hotel search and pricing MCP server using SearchAPI Google Hotels",
+  "capabilities": {
+    "tools": [
+      {
+        "name": "search_hotels",
+        "description": "Search for hotels based on city, dates, and guest preferences",
+        "parameters": {
+          "city": {"type": "string", "required": true, "description": "City or destination to search for hotels"},
+          "check_in_date": {"type": "string", "required": true, "format": "date", "description": "Check-in date in YYYY-MM-DD format"},
+          "check_out_date": {"type": "string", "required": true, "format": "date", "description": "Check-out date in YYYY-MM-DD format"},
+          "adults": {"type": "integer", "required": false, "default": 2, "description": "Number of adult guests"},
+          "children": {"type": "integer", "required": false, "default": 0, "description": "Number of children"},
+          "rooms": {"type": "integer", "required": false, "default": 1, "description": "Number of rooms needed"},
+          "hotel_class": {"type": "string", "required": false, "enum": ["3", "4", "5"], "description": "Hotel star rating filter"},
+          "max_price": {"type": "number", "required": false, "description": "Maximum price per night in USD"},
+          "amenities": {"type": "array", "items": {"type": "string"}, "required": false, "description": "Desired amenities"},
+          "sort_by": {"type": "string", "required": false, "default": "price", "enum": ["price", "rating", "distance"]},
+          "max_results": {"type": "integer", "required": false, "default": 10, "description": "Maximum number of hotels to return"}
+        },
+        "returns": {
+          "type": "object",
+          "description": "Hotel search results with list of hotels, pricing, amenities, and location details"
+        }
+      },
+      {
+        "name": "get_hotel_pricing",
+        "description": "Get detailed pricing information for a specific hotel and room type",
+        "parameters": {
+          "hotel_id": {"type": "string", "required": true, "description": "Hotel ID from search results"},
+          "room_type": {"type": "string", "required": false, "description": "Specific room type"},
+          "check_in_date": {"type": "string", "required": true, "format": "date", "description": "Check-in date in YYYY-MM-DD format"},
+          "check_out_date": {"type": "string", "required": true, "format": "date", "description": "Check-out date in YYYY-MM-DD format"},
+          "adults": {"type": "integer", "required": false, "default": 2, "description": "Number of adult guests"},
+          "children": {"type": "integer", "required": false, "default": 0, "description": "Number of children"},
+          "rooms": {"type": "integer", "required": false, "default": 1, "description": "Number of rooms needed"}
+        },
+        "returns": {
+          "type": "object",
+          "description": "Detailed pricing breakdown with base price, taxes, total cost, and cancellation policy"
+        }
+      }
+    ],
+    "resources": [],
+    "prompts": []
+  },
+  "transport": {
+    "type": "stdio"
+  },
+  "environment_variables": [
+    {
+      "name": "SEARCH_API_KEY",
+      "description": "SearchAPI key for accessing Google Hotels data",
+      "required": true
+    }
+  ],
+  "usage": {
+    "command": "python -m hotel_mcp_agent",
+    "demo_mode": "python -m hotel_mcp_agent --demo"
+  },
+  "tags": ["hotels", "travel", "booking", "pricing", "google-hotels", "searchapi"],
+  "author": "YC Hackathon Team",
+  "license": "MIT"
+}
