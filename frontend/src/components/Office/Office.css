@@ -1,0 +1,643 @@
+/* Professional Office Container with Subtle Isometric View */
+.office-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 650px;
+  margin: 0 auto;
+  padding: 30px;
+  background: rgba(248, 249, 250, 0.1);
+  border: 2px solid rgba(73, 80, 87, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  overflow: visible;
+}
+
+/* Subtle Isometric Office Layout */
+.office-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  transform-style: preserve-3d;
+  transform: rotateX(15deg) rotateY(0deg);
+  background: rgba(222, 226, 230, 0.05);
+  position: relative;
+}
+
+/* Office Rows with Proper Depth */
+.office-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  transform-style: preserve-3d;
+}
+
+.office-row-top {
+  flex: 0 0 140px;
+  transform: translateZ(40px);
+}
+
+.office-row-middle {
+  flex: 1;
+  max-height: 180px;
+  transform: translateZ(20px);
+}
+
+.office-row-bottom {
+  flex: 0 0 160px;
+  transform: translateZ(0px);
+}
+
+/* Professional Room Base Styles */
+.room {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #343a40;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    inset 0 0 20px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+
+.room:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    inset 0 0 20px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+/* Clean Room Labels */
+.room-label {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #212529;
+  z-index: 20;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+/* Manager's Office - Professional Purple */
+.room-manager {
+  flex: 0 0 350px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f3f0ff 100%);
+  border-color: #6c5ce7;
+}
+
+.room-manager::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #6c5ce7 0%, #a29bfe 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Hotel Office - Warm Earth Tones */
+.room-hotel {
+  flex: 1;
+  min-width: 280px;
+  background: linear-gradient(135deg, #fff9f0 0%, #ffeddc 100%);
+  border-color: #d97706;
+}
+
+.room-hotel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d97706 0%, #fbbf24 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Lobby - Clean Glass Effect */
+.room-lobby {
+  flex: 1.5;
+  min-width: 350px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-color: #6b7280;
+  backdrop-filter: blur(5px);
+}
+
+.room-lobby::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #9ca3af 0%, #d1d5db 50%, #9ca3af 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Flight Office - Professional Blue */
+.room-flight {
+  flex: 1;
+  min-width: 280px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+  border-color: #0284c7;
+}
+
+.room-flight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Budget Office - Subtle Green */
+.room-budget {
+  flex: 1;
+  min-width: 280px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #16a34a;
+}
+
+.room-budget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #16a34a 0%, #4ade80 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Activities Office - Soft Pink */
+.room-activities {
+  flex: 1;
+  min-width: 280px;
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  border-color: #db2777;
+}
+
+.room-activities::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #db2777 0%, #f472b6 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Kitchen - Warm Browns */
+.room-kitchen {
+  flex: 1.5;
+  min-width: 350px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  border-color: #92400e;
+}
+
+.room-kitchen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #92400e 0%, #d97706 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Meeting Rooms - Professional Gray-Blue */
+.room-meeting {
+  flex: 1;
+  min-width: 250px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-color: #475569;
+}
+
+.room-meeting::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #475569 0%, #64748b 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+.room-meeting-left {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  border-color: #7c3aed;
+}
+
+.room-meeting-left::before {
+  background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+}
+
+.room-meeting-right {
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  border-color: #4f46e5;
+}
+
+.room-meeting-right::before {
+  background: linear-gradient(90deg, #4f46e5 0%, #818cf8 100%);
+}
+
+/* Room Decorations Container */
+.room-decorations {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Professional Decorations */
+.decoration {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Desk Styling */
+.decoration.desk {
+  width: 60px;
+  height: 36px;
+  background: linear-gradient(135deg, #8b7355 0%, #6b5d4f 100%);
+  border: 2px solid #3e362e;
+  border-radius: 4px;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.decoration.desk::before,
+.decoration.desk::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  width: 6px;
+  height: 10px;
+  background: #6b5d4f;
+  border: 1px solid #3e362e;
+}
+
+.decoration.desk::before {
+  left: 10px;
+}
+
+.decoration.desk::after {
+  right: 10px;
+}
+
+/* Computer Styling */
+.decoration.computer {
+  width: 28px;
+  height: 20px;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border: 2px solid #000;
+  border-radius: 2px;
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.decoration.computer::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  border-radius: 1px;
+}
+
+/* Plant Styling */
+.decoration.plant {
+  width: 24px;
+  height: 36px;
+}
+
+.decoration.plant::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 6px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+  border: 2px solid #451a03;
+  border-radius: 2px;
+}
+
+.decoration.plant::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: radial-gradient(circle, #22c55e 0%, #16a34a 70%, #15803d 100%);
+  border: 2px solid #166534;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.decoration.plant.left {
+  top: 20px;
+  left: 30px;
+}
+
+.decoration.plant.right {
+  top: 20px;
+  right: 30px;
+}
+
+.decoration.plant.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.decoration.plant.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.decoration.plant.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.decoration.plant.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Icon Decorations */
+.decoration.hotel-icon,
+.decoration.plane-icon,
+.decoration.money-icon,
+.decoration.activity-icon {
+  font-size: 32px;
+  top: 20px;
+  right: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Kitchen Decorations */
+.decoration.coffee-machine {
+  font-size: 24px;
+  top: 15px;
+  left: 20px;
+}
+
+.decoration.fridge {
+  font-size: 28px;
+  top: 15px;
+  right: 20px;
+}
+
+.decoration.microwave {
+  font-size: 20px;
+  top: 15px;
+  left: 60px;
+}
+
+.decoration.sink {
+  font-size: 20px;
+  bottom: 40px;
+  left: 20px;
+}
+
+.decoration.vending-machine {
+  font-size: 24px;
+  bottom: 15px;
+  right: 20px;
+}
+
+.decoration.fruit-basket {
+  font-size: 20px;
+  bottom: 40px;
+  right: 60px;
+}
+
+.decoration.table.kitchen-table {
+  width: 70px;
+  height: 40px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+  border: 2px solid #451a03;
+  border-radius: 4px;
+}
+
+/* Meeting Room Decorations */
+.decoration.conference-table {
+  position: absolute;
+  width: 80%;
+  height: 60%;
+  top: 20%;
+  left: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-surface {
+  width: 100%;
+  height: 70%;
+  background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+  border: 3px solid #451a03;
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.chair {
+  position: absolute;
+  font-size: 18px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.chair-top-left {
+  top: -20px;
+  left: 25%;
+  transform: rotate(180deg);
+}
+
+.chair-top-right {
+  top: -20px;
+  right: 25%;
+  transform: rotate(180deg);
+}
+
+.chair-bottom-left {
+  bottom: -20px;
+  left: 25%;
+}
+
+.chair-bottom-right {
+  bottom: -20px;
+  right: 25%;
+}
+
+.chair-left {
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.chair-right {
+  right: -25px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+}
+
+.decoration.whiteboard {
+  font-size: 24px;
+  top: 10px;
+  left: 15px;
+}
+
+.decoration.projector {
+  font-size: 20px;
+  top: 10px;
+  right: 15px;
+}
+
+.decoration.tv-screen {
+  font-size: 24px;
+  top: 10px;
+  left: 15px;
+}
+
+.decoration.conference-phone {
+  font-size: 20px;
+  top: 10px;
+  right: 15px;
+}
+
+.decoration.plant.meeting-plant {
+  bottom: 10px;
+  right: 10px;
+  width: 18px;
+  height: 28px;
+}
+
+/* Reception Desk in Lobby */
+.decoration.desk.reception {
+  width: 80px;
+  height: 40px;
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  border-color: #374151;
+}
+
+/* Office Hallway Decorations */
+.office-hallway-decorations {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+.office-hallway-decorations .decoration {
+  position: absolute;
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.office-hallway-decorations .water-cooler {
+  top: 195px;
+  left: 440px;
+  font-size: 24px;
+}
+
+.office-hallway-decorations .bulletin-board {
+  top: 195px;
+  right: 440px;
+  font-size: 22px;
+}
+
+.office-hallway-decorations .clock {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 26px;
+}
+
+.office-hallway-decorations .fire-extinguisher {
+  bottom: 200px;
+  left: 20px;
+  font-size: 20px;
+}
+
+.office-hallway-decorations .exit-sign {
+  bottom: 200px;
+  right: 20px;
+  font-size: 22px;
+}
+
+
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .office-container {
+    height: 500px;
+  }
+  
+  .office-layout {
+    transform: rotateX(10deg) rotateY(0deg);
+  }
+  
+  .office-row-top {
+    flex: 0 0 120px;
+  }
+  
+  .office-row-middle {
+    max-height: 150px;
+  }
+  
+  .office-row-bottom {
+    flex: 0 0 140px;
+  }
+  
+  .room-label {
+    font-size: 9px;
+  }
+}

@@ -1,0 +1,190 @@
+/* Professional Game Container */
+.game-container {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Game Header */
+.game-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+}
+
+.game-title {
+  font-size: 24px;
+  color: #ffd700;
+  text-shadow: 
+    3px 3px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+  letter-spacing: 2px;
+  animation: pixelPulse 2s ease-in-out infinite;
+}
+
+.game-status {
+  font-size: 12px;
+  color: #00ff00;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 8px 16px;
+  border: 2px solid #00ff00;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+/* Game World */
+.game-world {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Planning Indicator */
+.planning-indicator {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px solid #ffd700;
+  padding: 12px 24px;
+  z-index: 60;
+}
+
+.loading-dots {
+  font-size: 12px;
+  color: #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.loading-dots .dot {
+  animation: dotPulse 1.5s infinite;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.loading-dots .dot:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+@keyframes dotPulse {
+  0%, 60%, 100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* Screen Effects */
+.game-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    );
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.5;
+}
+
+/* CRT TV Effect */
+.game-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  pointer-events: none;
+  z-index: 201;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .game-title {
+    font-size: 18px;
+  }
+  
+  .game-status {
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+}
+
+/* Animations */
+@keyframes pixelGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Stage-specific styles */
+.game-container.stage-intro .game-world {
+  filter: brightness(1.1);
+}
+
+.game-container.stage-planning .game-world {
+  animation: subtleShake 10s ease-in-out infinite;
+}
+
+.game-container.stage-final .game-world {
+  filter: brightness(1.2) contrast(1.1);
+}
+
+@keyframes subtleShake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-1px, 0); }
+  20% { transform: translate(1px, 0); }
+  30% { transform: translate(0, -1px); }
+  40% { transform: translate(0, 1px); }
+  50% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  70% { transform: translate(0, -1px); }
+  80% { transform: translate(-1px, 0); }
+  90% { transform: translate(1px, 0); }
+}
