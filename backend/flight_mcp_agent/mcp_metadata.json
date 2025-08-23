@@ -1,0 +1,75 @@
+{
+  "name": "flight-mcp-agent",
+  "version": "1.0.0",
+  "description": "Flight search and pricing MCP server using Amadeus API",
+  "capabilities": {
+    "tools": [
+      {
+        "name": "search_flights",
+        "description": "Search for flights based on trip constraints (origin, destination, dates, passengers)",
+        "parameters": {
+          "origin": {"type": "string", "required": true, "description": "Origin airport code (e.g., JFK, LAX)"},
+          "destination": {"type": "string", "required": true, "description": "Destination airport code (e.g., JFK, LAX)"},
+          "departure_date": {"type": "string", "required": true, "format": "date", "description": "Departure date in YYYY-MM-DD format"},
+          "return_date": {"type": "string", "required": false, "format": "date", "description": "Return date for round trip"},
+          "adults": {"type": "integer", "required": false, "default": 1, "description": "Number of adult passengers"},
+          "children": {"type": "integer", "required": false, "default": 0, "description": "Number of child passengers"},
+          "infants": {"type": "integer", "required": false, "default": 0, "description": "Number of infant passengers"},
+          "travel_class": {"type": "string", "required": false, "default": "ECONOMY", "enum": ["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"]},
+          "max_results": {"type": "integer", "required": false, "default": 10, "description": "Maximum number of flight options to return"}
+        },
+        "returns": {
+          "type": "object",
+          "description": "Flight search results with list of flight options, search ID, and total results count"
+        }
+      },
+      {
+        "name": "get_flight_pricing",
+        "description": "Get detailed pricing information for specific flight IDs including fare breakdown",
+        "parameters": {
+          "flight_ids": {"type": "array", "items": {"type": "string"}, "required": true, "description": "List of flight IDs to get pricing for"}
+        },
+        "returns": {
+          "type": "array",
+          "description": "Array of pricing details with base fare, taxes, fees, and total cost breakdown"
+        }
+      },
+      {
+        "name": "get_cached_flights",
+        "description": "Get cached/demo flight data for testing purposes without API calls",
+        "parameters": {
+          "origin": {"type": "string", "required": true, "description": "Origin airport code"},
+          "destination": {"type": "string", "required": true, "description": "Destination airport code"}
+        },
+        "returns": {
+          "type": "object",
+          "description": "Demo flight search results for testing and development"
+        }
+      }
+    ],
+    "resources": [],
+    "prompts": []
+  },
+  "transport": {
+    "type": "stdio"
+  },
+  "environment_variables": [
+    {
+      "name": "AMADEUS_API_KEY",
+      "description": "Amadeus API key for flight data access",
+      "required": true
+    },
+    {
+      "name": "AMADEUS_API_SECRET", 
+      "description": "Amadeus API secret for authentication",
+      "required": true
+    }
+  ],
+  "usage": {
+    "command": "python -m flight_mcp_agent",
+    "demo_mode": "python -m flight_mcp_agent --demo"
+  },
+  "tags": ["flights", "travel", "amadeus", "booking", "pricing"],
+  "author": "YC Hackathon Team",
+  "license": "MIT"
+}
