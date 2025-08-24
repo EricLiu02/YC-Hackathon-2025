@@ -4,68 +4,95 @@ from typing import List, Optional, Dict, Any
 from datetime import date, datetime
 from dotenv import load_dotenv
 
-from models import (
-    HotelSearchRequest, HotelSearchResponse, HotelPricingRequest, HotelPricingResponse,
-    Hotel, HotelLocation, HotelReview, HotelAmenity, RoomType,
-    PricingDetails, CancellationPolicy
-)
-from fixtures import get_demo_hotel_search_response, get_demo_hotel_pricing
+# Try absolute imports first
+try:
+    from models import (
+        HotelSearchRequest, HotelSearchResponse, HotelPricingRequest, HotelPricingResponse,
+        Hotel, HotelLocation, HotelReview, HotelAmenity, RoomType,
+        PricingDetails, CancellationPolicy
+    )
+    from location_enricher import PerplexityLocationEnricher, LocationInfo
+except ImportError:
+    # Fall back to relative imports
+    from .models import (
+        HotelSearchRequest, HotelSearchResponse, HotelPricingRequest, HotelPricingResponse,
+        Hotel, HotelLocation, HotelReview, HotelAmenity, RoomType,
+        PricingDetails, CancellationPolicy
+    )
+    from .location_enricher import PerplexityLocationEnricher, LocationInfo
 
 load_dotenv()
 
 
 class SearchAPIHotelClient:
-    def __init__(self, use_demo_data: bool = False):
-        self.use_demo_data = use_demo_data
+    def __init__(self):
         self.base_url = "https://www.searchapi.io/api/v1/search"
         
-        if not use_demo_data:
-            self.api_key = os.getenv('SEARCH_API_KEY')
-            if not self.api_key:
-                raise ValueError("SearchAPI key not found. Set SEARCH_API_KEY environment variable.")
+        # Initialize location enricher
+        try:
+            self.location_enricher = PerplexityLocationEnricher()
+            self.use_location_enrichment = True
+        except ValueError:
+            print("Warning: PERPLEXITY_API_KEY not found. Location enrichment disabled.")
+            self.use_location_enrichment = False
+        
+        # Require API key for operation
+        self.api_key = os.getenv('SEARCH_API_KEY') or os.getenv('SEARCHAPI_KEY')
+        if not self.api_key:
+            raise ValueError("SearchAPI key required. Set SEARCH_API_KEY or SEARCHAPI_KEY environment variable.")
     
     async def search_hotels(self, request: HotelSearchRequest) -> HotelSearchResponse:
-        if self.use_demo_data:
-            return get_demo_hotel_search_response(
-                request.city, 
-                request.check_in_date, 
-                request.check_out_date
-            )
-        
         try:
+            # Enrich location data using Perplexity if available
+            location_info = None
+            if self.use_location_enrichment:
+                try:
+                    user_query = f"hotels in {request.city}"
+                    location_info = await self.location_enricher.enrich_location(user_query)
+                    print(f"✨ Location enriched: {location_info.city}, {location_info.country}")
+                except Exception as e:
+                    print(f"Location enrichment failed: {e}. Using basic location data.")
+            
             # Format dates for Google Hotels API
             check_in = request.check_in_date.strftime('%Y-%m-%d')
             check_out = request.check_out_date.strftime('%Y-%m-%d')
             
-            # Build search parameters for Google Hotels
+            # Build search parameters for Google Hotels with enriched data
             params = {
                 'api_key': self.api_key,
                 'engine': 'google_hotels',
-                'q': f'hotels in {request.city}',
+                'q': f'hotels in {location_info.city if location_info else request.city}',
                 'check_in_date': check_in,
                 'check_out_date': check_out,
                 'adults': request.adults,
                 'children': request.children,
                 'rooms': request.rooms,
-                'currency': 'USD',
-                'gl': 'us',
+                'currency': location_info.currency if location_info and location_info.currency else 'USD',
+                'gl': location_info.country_code.lower() if location_info and location_info.country_code else 'us',
                 'hl': 'en'
             }
             
+            # Add bounding box if available for more precise location search
+            if location_info and location_info.bounding_box:
+                params['bounding_box'] = ','.join(map(str, location_info.bounding_box))
+            
             # Add optional filters
             if request.hotel_class:
-                params['hotel_class'] = request.hotel_class
+                params['hotel_class'] = request.hotel_class  # e.g., "4,5" for 4-5 star hotels
             
             if request.max_price:
                 params['max_price'] = request.max_price
                 
+            # Add sort_by parameter using correct SearchAPI values
             if request.sort_by:
                 sort_mapping = {
-                    'price': '1',  # Sort by price
-                    'rating': '2',  # Sort by rating  
-                    'distance': '3'  # Sort by distance
+                    'price': 'lowest_price',
+                    'rating': 'highest_rating', 
+                    'distance': 'relevance',  # Closest approximation
+                    'top': 'highest_rating'
                 }
-                params['sort_by'] = sort_mapping.get(request.sort_by, '1')
+                if request.sort_by in sort_mapping:
+                    params['sort_by'] = sort_mapping[request.sort_by]
             
             # Make the API request
             response = requests.get(self.base_url, params=params, timeout=30)
@@ -75,37 +102,45 @@ class SearchAPIHotelClient:
             
             # Parse the response
             hotels = []
-            search_id = f"searchapi_{request.city}_{check_in}_{check_out}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            final_city = location_info.city if location_info else request.city
+            search_id = f"searchapi_{final_city}_{check_in}_{check_out}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
             
             # Extract hotels from Google Hotels API response
             if 'properties' in data:
                 for i, property_data in enumerate(data['properties'][:request.max_results]):
-                    hotel = self._parse_hotel_from_api(property_data, request)
+                    hotel = self._parse_hotel_from_api(property_data, request, location_info)
                     hotels.append(hotel)
             
             return HotelSearchResponse(
                 hotels=hotels,
                 search_id=search_id,
                 total_results=len(hotels),
-                city=request.city,
+                city=final_city,
                 check_in_date=request.check_in_date,
                 check_out_date=request.check_out_date
             )
             
         except Exception as error:
-            print(f"SearchAPI error: {error}. Falling back to demo data.")
-            return get_demo_hotel_search_response(
-                request.city, 
-                request.check_in_date, 
-                request.check_out_date
-            )
+            print(f"SearchAPI error: {error}")
+            raise
     
-    def _parse_hotel_from_api(self, property_data: Dict[str, Any], request: HotelSearchRequest) -> Hotel:
+    def _parse_hotel_from_api(self, property_data: Dict[str, Any], request: HotelSearchRequest, location_info: Optional[LocationInfo] = None) -> Hotel:
         """Parse hotel data from SearchAPI Google Hotels response"""
         
         # Extract basic info
         hotel_id = property_data.get('property_token', f"hotel_{property_data.get('name', 'unknown').lower().replace(' ', '_')}")
         name = property_data.get('name', 'Unknown Hotel')
+        
+        # Extract star rating - debug what we're getting
+        star_rating = property_data.get('extracted_hotel_class')
+        if star_rating is None:
+            # Fallback: try to parse from hotel_class string 
+            hotel_class_str = property_data.get('hotel_class', '')
+            if 'star' in hotel_class_str:
+                try:
+                    star_rating = int(hotel_class_str.split('-')[0])
+                except:
+                    pass
         
         # Location info
         location = HotelLocation(
@@ -134,50 +169,39 @@ class SearchAPIHotelClient:
         if 'images' in property_data:
             images = [img.get('thumbnail') for img in property_data['images'] if img.get('thumbnail')]
         
-        # Room types and pricing
+        # Room types and pricing - SearchAPI returns pricing in property level
         rooms = []
-        if 'rates' in property_data:
-            for rate in property_data['rates']:
-                nights = (request.check_out_date - request.check_in_date).days
-                price_per_night = float(rate.get('rate_per_night', {}).get('lowest', 100))
-                total_price = price_per_night * nights
-                
-                room = RoomType(
-                    room_id=rate.get('rate_id', f"room_{len(rooms)}"),
-                    room_name=rate.get('type', 'Standard Room'),
-                    description=rate.get('description', ''),
-                    max_occupancy=request.adults + request.children,
-                    bed_info=rate.get('bed_info', ''),
-                    price_per_night=price_per_night,
-                    total_price=total_price,
-                    currency='USD',
-                    cancellation_policy=rate.get('cancellation_policy', 'Standard cancellation policy'),
-                    breakfast_included=rate.get('breakfast_included', False)
-                )
-                rooms.append(room)
+        nights = (request.check_out_date - request.check_in_date).days
+        currency = location_info.currency if location_info and location_info.currency else 'USD'
         
-        # If no rooms found, create a default one
-        if not rooms:
-            nights = (request.check_out_date - request.check_in_date).days
-            price_per_night = float(property_data.get('rate_per_night', {}).get('lowest', 150))
-            rooms.append(RoomType(
-                room_id=f"{hotel_id}_standard",
-                room_name="Standard Room",
-                description="Standard hotel room",
-                max_occupancy=request.adults + request.children,
-                bed_info="1 Double Bed",
-                price_per_night=price_per_night,
-                total_price=price_per_night * nights,
-                currency='USD',
-                cancellation_policy="Standard cancellation policy applies",
-                breakfast_included=False
-            ))
+        # Get price per night from the property data
+        price_per_night = 150  # Default fallback
+        if 'price_per_night' in property_data and 'extracted_price' in property_data['price_per_night']:
+            price_per_night = float(property_data['price_per_night']['extracted_price'])
+        elif 'total_price' in property_data and 'extracted_price' in property_data['total_price']:
+            price_per_night = float(property_data['total_price']['extracted_price'])
+        
+        total_price = price_per_night * nights
+        
+        # Create a default room since SearchAPI doesn't provide detailed room types
+        rooms.append(RoomType(
+            room_id=f"{hotel_id}_standard",
+            room_name="Standard Room",
+            description="Standard hotel room",
+            max_occupancy=request.adults + request.children,
+            bed_info="Standard bed configuration",
+            price_per_night=price_per_night,
+            total_price=total_price,
+            currency=currency,
+            cancellation_policy="Standard cancellation policy applies",
+            breakfast_included=False
+        ))
         
         return Hotel(
             hotel_id=hotel_id,
             name=name,
             location=location,
-            star_rating=property_data.get('hotel_class'),
+            star_rating=star_rating,  # Use parsed star rating
             review=review,
             amenities=amenities,
             images=images,
@@ -187,31 +211,6 @@ class SearchAPIHotelClient:
         )
     
     async def get_hotel_pricing(self, request: HotelPricingRequest) -> HotelPricingResponse:
-        if self.use_demo_data:
-            return get_demo_hotel_pricing(
-                request.hotel_id,
-                request.check_in_date,
-                request.check_out_date,
-                request.room_type
-            )
-        
-        try:
-            # For pricing details, we'd typically need a separate API call
-            # For now, we'll use demo data as SearchAPI Google Hotels pricing 
-            # requires more complex handling
-            print("Using demo pricing data for detailed pricing information.")
-            return get_demo_hotel_pricing(
-                request.hotel_id,
-                request.check_in_date,
-                request.check_out_date,
-                request.room_type
-            )
-            
-        except Exception as error:
-            print(f"Error getting hotel pricing: {error}. Using demo data.")
-            return get_demo_hotel_pricing(
-                request.hotel_id,
-                request.check_in_date,
-                request.check_out_date,
-                request.room_type
-            )
+        # SearchAPI Google Hotels doesn't provide separate pricing endpoint
+        # Pricing is included in the search results
+        raise NotImplementedError("Detailed pricing is included in hotel search results. Use search_hotels instead.")

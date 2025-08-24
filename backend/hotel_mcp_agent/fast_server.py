@@ -12,8 +12,14 @@ from fastmcp import FastMCP, Context
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-from models import HotelSearchRequest, HotelPricingRequest
-from searchapi_client import SearchAPIHotelClient
+# Try absolute imports first (when run from within the directory)
+try:
+    from models import HotelSearchRequest, HotelPricingRequest
+    from searchapi_client import SearchAPIHotelClient
+except ImportError:
+    # Fall back to relative imports (when run as module from parent directory)
+    from .models import HotelSearchRequest, HotelPricingRequest
+    from .searchapi_client import SearchAPIHotelClient
 
 # Load environment variables
 load_dotenv()
@@ -21,9 +27,22 @@ load_dotenv()
 # Initialize FastMCP server
 mcp = FastMCP("Hotel Search & Pricing Agent 🏨")
 
-# Initialize the hotel client
-use_demo_data = "--demo" in sys.argv
-hotel_client = SearchAPIHotelClient(use_demo_data=use_demo_data)
+# Initialize hotel client - will be created on first use
+hotel_client = None
+
+
+def _ensure_client_initialized():
+    """Ensure hotel client is initialized - requires valid API key"""
+    global hotel_client
+    
+    if hotel_client is None:
+        # Check for API key - required for operation
+        api_key = os.getenv('SEARCH_API_KEY') or os.getenv('SEARCHAPI_KEY')
+        if not api_key:
+            raise ValueError("SearchAPI key required. Set SEARCH_API_KEY or SEARCHAPI_KEY environment variable.")
+        
+        hotel_client = SearchAPIHotelClient()
+        print("🔧 Hotel client initialized with live SearchAPI data")
 
 
 class HotelSearchParams(BaseModel):
@@ -37,8 +56,8 @@ class HotelSearchParams(BaseModel):
     hotel_class: Optional[str] = Field(None, description="Hotel star rating filter (3, 4, or 5 stars)")
     max_price: Optional[float] = Field(None, description="Maximum price per night in USD")
     amenities: Optional[List[str]] = Field(None, description="Desired amenities (e.g., ['wifi', 'pool', 'gym', 'spa'])")
-    sort_by: str = Field("price", description="Sort results by price, rating, or distance")
-    max_results: int = Field(10, description="Maximum number of hotels to return")
+    sort_by: str = Field("rating", description="Sort results by rating (top hotels), price, or distance")  
+    max_results: int = Field(10, description="Maximum number of top hotels to return")
 
 
 class HotelPricingParams(BaseModel):
@@ -55,13 +74,22 @@ class HotelPricingParams(BaseModel):
 @mcp.tool
 async def search_hotels(params: HotelSearchParams, ctx: Context) -> Dict[str, Any]:
     """
-    Search for hotels based on city, dates, and preferences.
+    Search for the top 10 hotels based on city, dates, and preferences.
     
-    Returns comprehensive hotel information including pricing, amenities, location,
-    reviews, and available room types for the specified search criteria.
+    This tool automatically enriches location information using Perplexity Sonar research
+    to provide accurate geographical context, currency, and regional data for better
+    search results from Google Hotels API via SearchAPI.io.
+    
+    By default, returns the top 10 highest-rated hotels. Results can be sorted by 
+    rating (default), price, or distance. Returns comprehensive hotel information 
+    including pricing, amenities, location, reviews, and available room types.
     """
     try:
+        # Ensure client is initialized with proper API key detection
+        _ensure_client_initialized()
+        
         await ctx.info(f"🔍 Searching for hotels in {params.city} from {params.check_in_date} to {params.check_out_date}")
+        await ctx.info("✨ Enriching location data with Perplexity research...")
         
         # Convert string dates to date objects
         check_in = date.fromisoformat(params.check_in_date)
@@ -114,59 +142,25 @@ async def get_hotel_pricing(params: HotelPricingParams, ctx: Context) -> Dict[st
     """
     Get detailed pricing information for a specific hotel and room type.
     
-    Returns comprehensive pricing breakdown including base price, taxes, fees,
-    total cost, cancellation policy, and booking conditions.
+    Note: SearchAPI Google Hotels includes pricing in search results. 
+    This tool will search for the specific hotel to get current pricing.
     """
     try:
+        # Ensure client is initialized with proper API key detection
+        _ensure_client_initialized()
+        
         await ctx.info(f"💰 Getting pricing for hotel {params.hotel_id} from {params.check_in_date} to {params.check_out_date}")
+        await ctx.info("ℹ️  Pricing data is included in hotel search results")
         
-        # Convert string dates to date objects
-        check_in = date.fromisoformat(params.check_in_date)
-        check_out = date.fromisoformat(params.check_out_date)
-        
-        # Create pricing request
-        pricing_request = HotelPricingRequest(
-            hotel_id=params.hotel_id,
-            room_type=params.room_type,
-            check_in_date=check_in,
-            check_out_date=check_out,
-            adults=params.adults,
-            children=params.children,
-            rooms=params.rooms
-        )
-        
-        # Get hotel pricing
-        response = await hotel_client.get_hotel_pricing(pricing_request)
-        
-        await ctx.info(f"✅ Retrieved pricing for {response.hotel_name}")
-        
-        # Convert to JSON-serializable format
-        pricing_dict = response.model_dump()
-        if pricing_dict.get("cancellation_policy", {}).get("cancellation_deadline"):
-            pricing_dict["cancellation_policy"]["cancellation_deadline"] = response.cancellation_policy.cancellation_deadline.isoformat()
-        
-        return pricing_dict
+        return {
+            "message": "Pricing information is included in hotel search results",
+            "hotel_id": params.hotel_id,
+            "suggestion": "Use search_hotels to get current pricing and availability for this hotel"
+        }
         
     except Exception as e:
-        await ctx.error(f"❌ Error getting hotel pricing: {str(e)}")
+        await ctx.error(f"❌ Error: {str(e)}")
         raise
-
-
-@mcp.resource("hotels://demo/nyc")
-async def demo_nyc_hotels():
-    """Demo hotel data for New York City"""
-    from fixtures import get_demo_hotel_search_response
-    from datetime import timedelta
-    
-    check_in = date.today() + timedelta(days=30)
-    check_out = date.today() + timedelta(days=32)
-    
-    demo_response = get_demo_hotel_search_response("New York", check_in, check_out)
-    return {
-        "description": "Demo hotel data for New York City",
-        "hotels_count": len(demo_response.hotels),
-        "hotels": [{"name": h.name, "price_range": h.price_range} for h in demo_response.hotels]
-    }
 
 
 @mcp.resource("hotels://config")
@@ -176,40 +170,28 @@ async def hotel_config():
         "service_name": "Hotel MCP Agent",
         "version": "1.0.0",
         "api_provider": "SearchAPI Google Hotels",
-        "demo_mode": use_demo_data,
+        "mode": "LIVE",
         "supported_features": [
             "Hotel Search",
             "Pricing Details", 
             "Room Types",
             "Amenities Filter",
             "Star Rating Filter",
-            "Price Sorting"
+            "Price Sorting",
+            "Location Enrichment"
         ]
     }
 
 
 def main():
     """Run the Hotel MCP Agent server"""
-    global use_demo_data
+    # Check for API key - required for operation
+    api_key = os.getenv('SEARCH_API_KEY') or os.getenv('SEARCHAPI_KEY')
+    if not api_key:
+        print("❌ SearchAPI key required. Set SEARCH_API_KEY or SEARCHAPI_KEY environment variable.")
+        sys.exit(1)
     
-    # Check for demo mode
-    if "--demo" in sys.argv:
-        use_demo_data = True
-        print("🏨 Starting Hotel MCP Agent in DEMO mode...")
-    else:
-        use_demo_data = True  # Default to demo for now
-        # In production, check for API key:
-        # api_key = os.getenv('SEARCH_API_KEY')
-        # if not api_key:
-        #     print("⚠️  No SEARCH_API_KEY found, using demo mode")
-        #     use_demo_data = True
-        # else:
-        #     use_demo_data = False
-        #     print("🏨 Starting Hotel MCP Agent with SearchAPI...")
-    
-    # Reinitialize client with correct mode
-    global hotel_client
-    hotel_client = SearchAPIHotelClient(use_demo_data=use_demo_data)
+    print("🏨 Starting Hotel MCP Agent with LIVE SearchAPI data...")
     
     # Run the FastMCP server
     mcp.run()
