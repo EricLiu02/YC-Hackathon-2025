@@ -1,0 +1,111 @@
+{
+  "name": "budgeteer-mcp-agent",
+  "version": "1.0.0",
+  "description": "Travel budgeting and cost estimation MCP server for trip planning",
+  "capabilities": {
+    "tools": [
+      {
+        "name": "calculate_trip_budget",
+        "description": "Calculate comprehensive trip budget including planned costs and daily spending estimates",
+        "parameters": {
+          "trip_plan": {
+            "type": "object",
+            "required": true,
+            "description": "Complete trip plan with components, dates, budget, and traveler count"
+          },
+          "daily_spend_estimates": {
+            "type": "array",
+            "items": {"type": "object"},
+            "required": true,
+            "description": "Daily spending estimates per category per person"
+          },
+          "additional_costs": {
+            "type": "array",
+            "items": {"type": "object"},
+            "required": false,
+            "description": "Optional additional costs not included in main trip plan"
+          },
+          "demo": {
+            "type": "boolean",
+            "required": false,
+            "description": "Whether to use demo data for testing"
+          }
+        },
+        "returns": {
+          "type": "object",
+          "description": "Budget calculation with breakdown by category, status, and surplus/shortfall analysis"
+        }
+      },
+      {
+        "name": "suggest_budget_swaps",
+        "description": "Suggest budget-friendly alternatives for trip components with cost savings and risk analysis",
+        "parameters": {
+          "trip_plan": {
+            "type": "object",
+            "required": true,
+            "description": "Current trip plan to analyze for budget optimization"
+          },
+          "target_categories": {
+            "type": "array",
+            "items": {"type": "string"},
+            "required": false,
+            "description": "Specific travel categories to focus on for suggestions"
+          },
+          "max_risk_level": {
+            "type": "string",
+            "required": false,
+            "default": "medium",
+            "enum": ["low", "medium", "high"],
+            "description": "Maximum acceptable risk level for alternative suggestions"
+          },
+          "min_savings_threshold": {
+            "type": "number",
+            "required": false,
+            "default": 0.0,
+            "description": "Minimum cost savings required to suggest alternatives"
+          },
+                      "demo": {
+              "type": "boolean",
+              "required": false,
+              "description": "Whether to use demo data for testing"
+            }
+        },
+        "returns": {
+          "type": "object",
+          "description": "List of budget swap suggestions with cost savings, risk analysis, and constraint violations"
+        }
+      },
+      {
+        "name": "get_demo_trip_plan",
+        "description": "Get a demo trip plan for testing and development purposes",
+        "parameters": {},
+        "returns": {
+          "type": "object",
+          "description": "Sample trip plan with realistic components and costs"
+        }
+      },
+      {
+        "name": "get_demo_daily_spend_estimates",
+        "description": "Get demo daily spend estimates for testing and development purposes",
+        "parameters": {},
+        "returns": {
+          "type": "array",
+          "description": "Sample daily spending estimates by travel category"
+        }
+      }
+    ],
+    "resources": [],
+    "prompts": []
+  },
+  "transport": {
+    "type": "stdio"
+  },
+  "environment_variables": [],
+  "usage": {
+    "command": "python -m budgeteer_mcp_agent",
+    "demo_mode": "python -m budgeteer_mcp_agent --demo"
+  },
+  "tags": ["budgeting", "travel", "cost-estimation", "trip-planning", "financial-planning"],
+  "author": "YC Hackathon Team",
+  "license": "MIT"
+}

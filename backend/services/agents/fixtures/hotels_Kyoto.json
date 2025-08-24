@@ -1,0 +1,157 @@
+[
+  {
+    "hotel_id": "KYO_RYOKAN_01",
+    "name": "Gion Traditional Ryokan",
+    "city": "Kyoto",
+    "location": {
+      "address": "570-123 Gionmachi Minamigawa, Higashiyama Ward, Kyoto",
+      "latitude": 35.002,
+      "longitude": 135.775
+    },
+    "star_rating": 5,
+    "review": {
+      "rating": 4.8,
+      "total_reviews": 234,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "onsen", "available": true},
+      {"name": "kaiseki_dining", "available": true},
+      {"name": "tatami_rooms", "available": true},
+      {"name": "garden_view", "available": true}
+    ],
+    "images": [
+      "https://pics.example/kyo1.jpg",
+      "https://pics.example/kyo1b.jpg",
+      "https://pics.example/kyo1c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$280-$450",
+    "vibe": "traditional ryokan",
+    "near_transit_min": 8
+  },
+  {
+    "hotel_id": "KYO_BOUTIQUE_02",
+    "name": "Arashiyama Bamboo Lodge",
+    "city": "Kyoto",
+    "location": {
+      "address": "20 Sagatenryuji Susukinobaba-cho, Ukyo Ward, Kyoto",
+      "latitude": 35.017,
+      "longitude": 135.676
+    },
+    "star_rating": 4,
+    "review": {
+      "rating": 4.6,
+      "total_reviews": 445,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "bamboo_garden", "available": true},
+      {"name": "meditation_room", "available": true},
+      {"name": "bicycle_rental", "available": true}
+    ],
+    "images": [
+      "https://pics.example/kyo2.jpg",
+      "https://pics.example/kyo2b.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$180-$280",
+    "vibe": "boutique near bamboo forest",
+    "near_transit_min": 12
+  },
+  {
+    "hotel_id": "KYO_BUSINESS_03",
+    "name": "Kyoto Station Business Hotel",
+    "city": "Kyoto",
+    "location": {
+      "address": "721-1 Higashishiokojicho, Shimogyo Ward, Kyoto",
+      "latitude": 34.985,
+      "longitude": 135.759
+    },
+    "star_rating": 3,
+    "review": {
+      "rating": 4.1,
+      "total_reviews": 1876,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "business_center", "available": true},
+      {"name": "luggage_storage", "available": true},
+      {"name": "convenience_store", "available": true}
+    ],
+    "images": [
+      "https://pics.example/kyo3.jpg",
+      "https://pics.example/kyo3b.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$90-$140",
+    "vibe": "modern business",
+    "near_transit_min": 2
+  },
+  {
+    "hotel_id": "KYO_TEMPLE_04",
+    "name": "Kiyomizu Temple Inn",
+    "city": "Kyoto",
+    "location": {
+      "address": "1-294 Kiyomizu, Higashiyama Ward, Kyoto",
+      "latitude": 34.995,
+      "longitude": 135.785
+    },
+    "star_rating": 4,
+    "review": {
+      "rating": 4.4,
+      "total_reviews": 567,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "temple_view", "available": true},
+      {"name": "traditional_breakfast", "available": true},
+      {"name": "zen_garden", "available": true}
+    ],
+    "images": [
+      "https://pics.example/kyo4.jpg",
+      "https://pics.example/kyo4b.jpg",
+      "https://pics.example/kyo4c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$160-$250",
+    "vibe": "boutique near temples",
+    "near_transit_min": 15
+  },
+  {
+    "hotel_id": "KYO_LUXURY_05",
+    "name": "Philosopher's Path Luxury Suite",
+    "city": "Kyoto",
+    "location": {
+      "address": "34 Nanzenji Fukuchicho, Sakyo Ward, Kyoto",
+      "latitude": 35.010,
+      "longitude": 135.794
+    },
+    "star_rating": 5,
+    "review": {
+      "rating": 4.9,
+      "total_reviews": 189,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "private_onsen", "available": true},
+      {"name": "michelin_restaurant", "available": true},
+      {"name": "personal_butler", "available": true},
+      {"name": "cherry_blossom_view", "available": true}
+    ],
+    "images": [
+      "https://pics.example/kyo5.jpg",
+      "https://pics.example/kyo5b.jpg",
+      "https://pics.example/kyo5c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$450-$680",
+    "vibe": "luxury cultural experience",
+    "near_transit_min": 10
+  }
+]

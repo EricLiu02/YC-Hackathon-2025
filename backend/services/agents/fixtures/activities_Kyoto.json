@@ -1,0 +1,92 @@
+[
+  {
+    "id": "KYO_TEMPLE_WALK",
+    "name": "Higashiyama Temple Walk",
+    "city": "Kyoto",
+    "theme": ["temple", "culture"],
+    "price_usd": 0.0,
+    "duration_hr": 2.5,
+    "image": "https://pics.example/kyo_temple.jpg"
+  },
+  {
+    "id": "KYO_BAMBOO_GROVE",
+    "name": "Arashiyama Bamboo Grove",
+    "city": "Kyoto",
+    "theme": ["nature", "sightseeing"],
+    "price_usd": 0.0,
+    "duration_hr": 1.0,
+    "image": "https://pics.example/kyo_bamboo.jpg"
+  },
+  {
+    "id": "KYO_KAISEKI_DINNER",
+    "name": "Traditional Kaiseki Dining Experience",
+    "city": "Kyoto",
+    "theme": ["food", "culture", "fine_dining"],
+    "price_usd": 180.0,
+    "duration_hr": 2.5,
+    "image": "https://pics.example/kyo_kaiseki.jpg"
+  },
+  {
+    "id": "KYO_TEA_CEREMONY",
+    "name": "Traditional Tea Ceremony",
+    "city": "Kyoto",
+    "theme": ["culture", "spiritual", "traditional"],
+    "price_usd": 45.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/kyo_tea.jpg"
+  },
+  {
+    "id": "KYO_FUSHIMI_INARI",
+    "name": "Fushimi Inari Shrine Hike",
+    "city": "Kyoto",
+    "theme": ["shrine", "hiking", "spiritual"],
+    "price_usd": 0.0,
+    "duration_hr": 3.0,
+    "image": "https://pics.example/kyo_inari.jpg"
+  },
+  {
+    "id": "KYO_GION_DISTRICT",
+    "name": "Gion District Evening Stroll",
+    "city": "Kyoto",
+    "theme": ["culture", "geisha", "historic"],
+    "price_usd": 0.0,
+    "duration_hr": 2.0,
+    "image": "https://pics.example/kyo_gion.jpg"
+  },
+  {
+    "id": "KYO_GOLDEN_PAVILION",
+    "name": "Kinkaku-ji Golden Pavilion",
+    "city": "Kyoto",
+    "theme": ["temple", "sightseeing", "photography"],
+    "price_usd": 3.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/kyo_golden.jpg"
+  },
+  {
+    "id": "KYO_NIJO_CASTLE",
+    "name": "Nijo Castle and Gardens",
+    "city": "Kyoto",
+    "theme": ["castle", "history", "garden"],
+    "price_usd": 8.0,
+    "duration_hr": 2.0,
+    "image": "https://pics.example/kyo_nijo.jpg"
+  },
+  {
+    "id": "KYO_TOFU_CUISINE",
+    "name": "Buddhist Vegetarian Cuisine (Shojin Ryori)",
+    "city": "Kyoto",
+    "theme": ["food", "culture", "spiritual"],
+    "price_usd": 65.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/kyo_tofu.jpg"
+  },
+  {
+    "id": "KYO_PHILOSOPHER_PATH",
+    "name": "Philosopher's Path Cherry Walk",
+    "city": "Kyoto",
+    "theme": ["nature", "walking", "meditation"],
+    "price_usd": 0.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/kyo_philosopher.jpg"
+  }
+]

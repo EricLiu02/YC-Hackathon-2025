@@ -1,0 +1,153 @@
+[
+  {
+    "hotel_id": "TYO_BOUTIQUE_01",
+    "name": "Asakusa River Boutique",
+    "city": "Tokyo",
+    "location": {
+      "address": "1-2-3 Asakusa, Taito City, Tokyo",
+      "latitude": 35.711,
+      "longitude": 139.796
+    },
+    "star_rating": 4,
+    "review": {
+      "rating": 4.4,
+      "total_reviews": 812,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "laundry", "available": true},
+      {"name": "concierge", "available": true}
+    ],
+    "images": [
+      "https://pics.example/tyo1.jpg",
+      "https://pics.example/tyo1b.jpg",
+      "https://pics.example/tyo1c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$140-$220",
+    "vibe": "boutique near transit",
+    "near_transit_min": 5
+  },
+  {
+    "hotel_id": "TYO_BUSINESS_02",
+    "name": "Shibuya Business Tower",
+    "city": "Tokyo",
+    "location": {
+      "address": "2-1-1 Shibuya, Shibuya City, Tokyo",
+      "latitude": 35.658,
+      "longitude": 139.701
+    },
+    "star_rating": 4,
+    "review": {
+      "rating": 4.2,
+      "total_reviews": 1456,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "gym", "available": true},
+      {"name": "business_center", "available": true},
+      {"name": "restaurant", "available": true}
+    ],
+    "images": [
+      "https://pics.example/tyo2.jpg",
+      "https://pics.example/tyo2b.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$180-$280",
+    "vibe": "modern business",
+    "near_transit_min": 2
+  },
+  {
+    "hotel_id": "TYO_LUXURY_03",
+    "name": "Ginza Imperial Suite",
+    "city": "Tokyo",
+    "location": {
+      "address": "4-6-16 Ginza, Chuo City, Tokyo",
+      "latitude": 35.671,
+      "longitude": 139.763
+    },
+    "star_rating": 5,
+    "review": {
+      "rating": 4.7,
+      "total_reviews": 623,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "spa", "available": true},
+      {"name": "fine_dining", "available": true},
+      {"name": "butler_service", "available": true}
+    ],
+    "images": [
+      "https://pics.example/tyo3.jpg",
+      "https://pics.example/tyo3b.jpg",
+      "https://pics.example/tyo3c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$320-$480",
+    "vibe": "luxury shopping district",
+    "near_transit_min": 3
+  },
+  {
+    "hotel_id": "TYO_BUDGET_04",
+    "name": "Shinjuku Capsule Plus",
+    "city": "Tokyo",
+    "location": {
+      "address": "3-34-11 Shinjuku, Shinjuku City, Tokyo",
+      "latitude": 35.690,
+      "longitude": 139.700
+    },
+    "star_rating": 3,
+    "review": {
+      "rating": 3.9,
+      "total_reviews": 2341,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "shared_bath", "available": true},
+      {"name": "luggage_storage", "available": true}
+    ],
+    "images": [
+      "https://pics.example/tyo4.jpg",
+      "https://pics.example/tyo4b.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$45-$75",
+    "vibe": "modern capsule experience",
+    "near_transit_min": 4
+  },
+  {
+    "hotel_id": "TYO_TRADITIONAL_05",
+    "name": "Ueno Garden Ryokan",
+    "city": "Tokyo",
+    "location": {
+      "address": "2-13-5 Ueno, Taito City, Tokyo",
+      "latitude": 35.714,
+      "longitude": 139.777
+    },
+    "star_rating": 4,
+    "review": {
+      "rating": 4.5,
+      "total_reviews": 387,
+      "source": "Demo"
+    },
+    "amenities": [
+      {"name": "wifi", "available": true},
+      {"name": "traditional_bath", "available": true},
+      {"name": "tea_ceremony", "available": true},
+      {"name": "garden_view", "available": true}
+    ],
+    "images": [
+      "https://pics.example/tyo5.jpg",
+      "https://pics.example/tyo5b.jpg",
+      "https://pics.example/tyo5c.jpg"
+    ],
+    "rooms": [],
+    "price_range": "$160-$240",
+    "vibe": "traditional Japanese experience",
+    "near_transit_min": 7
+  }
+]

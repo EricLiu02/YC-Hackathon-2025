@@ -1,0 +1,92 @@
+[
+  {
+    "id": "TYO_TSUKIJI_FOOD",
+    "name": "Tsukiji Outer Market Food Tour",
+    "city": "Tokyo",
+    "theme": ["food", "culture"],
+    "price_usd": 75.0,
+    "duration_hr": 3.0,
+    "image": "https://pics.example/tyo_tsukiji.jpg"
+  },
+  {
+    "id": "TYO_SHIBUYA_COFFEE",
+    "name": "Shibuya Coffee Culture Walk",
+    "city": "Tokyo",
+    "theme": ["coffee", "urban"],
+    "price_usd": 35.0,
+    "duration_hr": 2.5,
+    "image": "https://pics.example/tyo_coffee.jpg"
+  },
+  {
+    "id": "TYO_UENO_MUSEUM",
+    "name": "Tokyo National Museum Visit",
+    "city": "Tokyo",
+    "theme": ["museum", "culture", "art"],
+    "price_usd": 12.0,
+    "duration_hr": 2.0,
+    "image": "https://pics.example/tyo_museum.jpg"
+  },
+  {
+    "id": "TYO_HARAJUKU_STREET",
+    "name": "Harajuku Street Fashion Tour",
+    "city": "Tokyo",
+    "theme": ["fashion", "culture", "shopping"],
+    "price_usd": 0.0,
+    "duration_hr": 2.0,
+    "image": "https://pics.example/tyo_harajuku.jpg"
+  },
+  {
+    "id": "TYO_IMPERIAL_GARDEN",
+    "name": "East Gardens of Imperial Palace",
+    "city": "Tokyo",
+    "theme": ["park", "nature", "history"],
+    "price_usd": 0.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/tyo_garden.jpg"
+  },
+  {
+    "id": "TYO_ROBOT_RESTAURANT",
+    "name": "Robot Restaurant Show",
+    "city": "Tokyo",
+    "theme": ["entertainment", "unique"],
+    "price_usd": 65.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/tyo_robot.jpg"
+  },
+  {
+    "id": "TYO_SUMIDA_RIVER",
+    "name": "Sumida River Cruise",
+    "city": "Tokyo",
+    "theme": ["sightseeing", "water"],
+    "price_usd": 28.0,
+    "duration_hr": 1.0,
+    "image": "https://pics.example/tyo_river.jpg"
+  },
+  {
+    "id": "TYO_MEIJI_SHRINE",
+    "name": "Meiji Shrine Visit",
+    "city": "Tokyo",
+    "theme": ["shrine", "culture", "spiritual"],
+    "price_usd": 0.0,
+    "duration_hr": 1.5,
+    "image": "https://pics.example/tyo_meiji.jpg"
+  },
+  {
+    "id": "TYO_AKIHABARA_TECH",
+    "name": "Akihabara Electronics District Tour",
+    "city": "Tokyo",
+    "theme": ["technology", "shopping", "anime"],
+    "price_usd": 0.0,
+    "duration_hr": 2.5,
+    "image": "https://pics.example/tyo_akihabara.jpg"
+  },
+  {
+    "id": "TYO_KAMAKURA_DAY",
+    "name": "Kamakura Day Trip",
+    "city": "Tokyo",
+    "theme": ["day_trip", "temple", "nature"],
+    "price_usd": 45.0,
+    "duration_hr": 8.0,
+    "image": "https://pics.example/tyo_kamakura.jpg"
+  }
+]
